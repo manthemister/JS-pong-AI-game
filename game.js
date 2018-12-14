@@ -2,7 +2,8 @@
 //tik sound by DeepFrozenApps: http://soundbible.com/2044-Tick.html
 
 var canvas = document.createElement("CANVAS");
-canvas.style.background = "RGB(255, 255, 255)"
+canvas.style.background = "RGB(255, 255, 255)";
+canvas.style.display = "block";
 var body = document.getElementsByTagName("body")[0];
 body.appendChild(canvas);
 var ctx = canvas.getContext("2d");
