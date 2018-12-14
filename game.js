@@ -10,7 +10,7 @@ var ctx = canvas.getContext("2d");
 var music = new Audio("https://b2aeaa58a57a200320db-8b65b95250e902c437b256b5abf3eac7.ssl.cf5.rackcdn.com/media_entries/19363/599bfa40-663c-4472-9da3-6b6cfdab56f6.wav");
 music.loop = true;
 music.play();
-var bing = new Audio("bing.wav");
+var bing = new Audio("A-Tone-His_Self-1266414414.wav.wav");
 var tik = new Audio("tik.mp3");
 tik.volume = 0.5;
 
