@@ -2,8 +2,7 @@
 //tik sound by DeepFrozenApps: http://soundbible.com/2044-Tick.html
 
 var canvas = document.createElement("CANVAS");
-canvas.style.background = "RGB(255, 255, 255)";
-canvas.style.display = "block";
+canvas.style.background = "RGB(255, 255, 255)"
 var body = document.getElementsByTagName("body")[0];
 body.appendChild(canvas);
 var ctx = canvas.getContext("2d");
@@ -13,6 +12,7 @@ music.loop = true;
 music.play();
 var bing = new Audio("bing.wav");
 var tik = new Audio("tik.mp3");
+tik.volume = 0.5;
 
 var resizeCanvas = function() {
   canvas.width = window.innerWidth;
@@ -23,6 +23,7 @@ resizeCanvas();
 var keysDown = [];
 $(document).keydown(function(event){
   if (!keysDown.includes(event.which)) {
+    event.preventDefault();
     keysDown.push(event.which);
   }
 });
@@ -33,26 +34,71 @@ $(document).keyup(function(event){
 var p1 = {
   x: 10,
 	y: canvas.height / 2,
+  targetY: this.y,
+  ai: true,
   score: 0,
+	getNearest: function() {
+    let distance, targetY, thing, endY, travelTime, incompatible = 0, minDistance = null;
+    if (ballField.length >= 1) {
+		  for (let i in ballField) {
+        thing = ballField[i];
+        if (thing.moveX >= 0 || thing.dead === true) {
+          incompatible++;
+          continue;
+        }
+        distance = ((thing.x - thing.radius) - 20) / Math.abs(thing.moveX);
+        targetY = thing.y + (thing.moveY * distance);
+        while (targetY - thing.radius < 0 || targetY - thing.radius > canvas.height) {
+          if (targetY - thing.radius < 0) {
+            targetY = Math.abs(targetY - thing.radius) + thing.radius;
+          }
+          if (targetY + thing.radius > canvas.height) {
+            targetY -= (((targetY + thing.radius) - canvas.height) * 2) - thing.radius;
+          }
+        }
+        travelTime = Math.abs(targetY - this.y) / 10;
+			  if((distance < minDistance || minDistance === null) && travelTime < distance + 5) {
+          minDistance = distance;
+          endY = targetY;
+        }
+      }
+    }
+    if (endY === undefined) {
+			this.targetY = canvas.height / 2;
+		} else {
+      this.targetY = endY;
+    }
+	},
 	tick: function() {
-    if (keysDown.includes(87) && this.y - 40 > 0) {
+    if (this.ai) {
+      this.getNearest();
+      if (this.targetY < this.y && this.y - 40 > 0) {
+        this.y -= 10;
+      }
+      if (this.targetY > this.y && this.y + 40 < canvas.height) {
+        this.y += 10;
+      }
+    } else {
+      if (keysDown.includes(87) && this.y - 40 > 0) {
       this.y -= 10;
     }
     if (keysDown.includes(83) && this.y + 40 < canvas.height) {
       this.y += 10;
     }
+    }
     ctx.fillStyle = "RGB(255, 0, 0)";
-	  ctx.fillRect(this.x + 4, this.y - 40, 8, 80) 
+	  ctx.fillRect(this.x - 4, this.y - 40, 8, 80);
   },
 }
 
 var p2 = {
 	x: canvas.width - 16,
 	y: canvas.height / 2,
+  ai: true,
   targetY: this.y,
   score: 0,
   getNearest: function() {
-    let distance, targetY, thing, incompatible = 0, minDistance = null;
+    let distance, targetY, thing, endY, travelTime, incompatible = 0, minDistance = null;
     if (ballField.length >= 1) {
 		  for (let i in ballField) {
         thing = ballField[i];
@@ -61,41 +107,65 @@ var p2 = {
           continue;
         }
         distance = (canvas.width - (thing.x + thing.radius) - 20) / thing.moveX;
-			  if(distance < minDistance || minDistance === null) {
-          minDistance = distance;
-          targetY = thing.y + (thing.moveY * distance);
-          while (targetY - thing.radius < 0 || targetY - thing.radius > canvas.height) {
-            if (targetY - thing.radius < 0) {
-              targetY = Math.abs(targetY - thing.radius) + thing.radius;
-            }
-            if (targetY + thing.radius > canvas.height) {
-              targetY -= (((targetY + thing.radius) - canvas.height) * 2) - thing.radius;
-            }
+        targetY = thing.y + (thing.moveY * distance);
+        while (targetY - thing.radius < 0 || targetY - thing.radius > canvas.height) {
+          if (targetY - thing.radius < 0) {
+            targetY = Math.abs(targetY - thing.radius) + thing.radius;
+          }
+          if (targetY + thing.radius > canvas.height) {
+            targetY -= (((targetY + thing.radius) - canvas.height) * 2) - thing.radius;
           }
         }
+        travelTime = Math.abs(targetY - this.y) / 10;
+			  if((distance < minDistance || minDistance === null) && travelTime < distance + 5) {
+          minDistance = distance;
+          endY = targetY;
+        }
       }
-      if (!(incompatible == ballField.length)) {
-        this.targetY = targetY;
-      } else {
-        this.targetY = canvas.height / 2;
-      }
-    } else {
+    }
+    if (endY === undefined) {
 			this.targetY = canvas.height / 2;
-			this.distance = this.radius + 1;
-		}
+		} else {
+      this.targetY = endY;
+    }
 	},
 	tick: function() {
-    this.getNearest();
-    if (this.targetY < this.y && this.y - 40 > 0) {
+    if (this.ai) {
+      this.getNearest();
+      if (this.targetY < this.y && this.y - 40 > 0) {
+        this.y -= 10;
+      }
+      if (this.targetY > this.y && this.y + 40 < canvas.height) {
+        this.y += 10;
+      }
+    } else {
+      if (keysDown.includes(38) && this.y - 40 > 0) {
       this.y -= 10;
     }
-    if (this.targetY > this.y && this.y + 40 < canvas.height) {
+    if (keysDown.includes(40) && this.y + 40 < canvas.height) {
       this.y += 10;
+    }
     }
     this.x = canvas.width - 16;
     ctx.fillStyle = "RGB(255, 0, 0)";
 	  ctx.fillRect(this.x - 4, this.y - 40, 8, 80);
   },
+}
+
+var players = prompt("How many players? (enter an integer between 0 and 2)");
+switch(players) {
+  case "0":
+    p1.ai = true;
+    p2.ai = true;
+    break;
+  case "1":
+    p1.ai = false;
+    p2.ai = true;
+    break;
+  default:
+    p1.ai = false;
+    p2.ai = false;
+    break;
 }
 
 var id = 0;
@@ -162,7 +232,7 @@ function Ball() {
     } else {
       if(this.y >= canvas.height - this.radius) {
         this.moveY = Math.abs(this.moveY) * -1;
-        tik.play;
+        tik.play();
       }
     }
     this.getNearest();
@@ -178,7 +248,7 @@ function Ball() {
       let run = p1.x - this.x;
       let rise = p1.y - this.y;
 			let length = Math.sqrt((run * run) + (rise * rise));
-      this.moveX = (run / length) * this.speed * -1;
+      this.moveX = Math.abs((run / length) * this.speed);
       this.moveY = (rise / length) * this.speed * -1;
       tik.play();
     }
@@ -186,7 +256,7 @@ function Ball() {
       let run = p2.x - this.x;
       let rise = p2.y - this.y;
 			let length = Math.sqrt((run * run) + (rise * rise));
-      this.moveX = (run / length) * this.speed * -1;
+      this.moveX = Math.abs((run / length) * this.speed) * -1;
       this.moveY = (rise / length) * this.speed * -1;
       tik.play();
     }
