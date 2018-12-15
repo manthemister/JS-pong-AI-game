@@ -283,24 +283,27 @@ var simulate = function() {
     ctx.fillStyle = "RGB(255, 0, 0)";
     ctx.fillText(p1.score, 10, 20);
     ctx.fillText(p2.score, canvas.width / 2 + 10, 20);
+    ctx.font = "10px arial";
+    ctx.fillStyle = "RGB(200, 200, 200)";
+    ctx.fillText("Music by Goblin Refuge. \"tik\" sound by DeepFrozenApps", 10, canvas.height - 20);
   }).call(this);
-	if(step % 100 == 0) {
-	  ballField.push(new Ball());
-	}
+  if(step % 100 == 0) {
+    ballField.push(new Ball());
+  }
   for (let i in ballField) {
     thing = ballField[i];
     if (typeof thing.tick === "function" && !thing.dead) {
       thing.tick();
     }
   }
-	for (let i in ballField) {
+  for (let i in ballField) {
     thing = ballField[i];
     if (typeof thing.move === "function" && !thing.dead) {
       thing.move();
     }
   }
   p1.tick();
-	p2.tick();
-	step++;
+  p2.tick();
+  step++;
 }
 var interval = setInterval(simulate, 50);
