@@ -8,11 +8,10 @@ var body = document.getElementsByTagName("body")[0];
 body.appendChild(canvas);
 var ctx = canvas.getContext("2d");
 
-var music = new Audio("https://b2aeaa58a57a200320db-8b65b95250e902c437b256b5abf3eac7.ssl.cf5.rackcdn.com/media_entries/19363/599bfa40-663c-4472-9da3-6b6cfdab56f6.wav");
+var music = new Audio("autumns-tread.wav");
 music.loop = true;
-music.play();
-var bing = new Audio("A-Tone-His_Self-1266414414.wav");
-var tik = new Audio("Tick-DeepFrozenApps-397275646.mp3");
+var bing = new Audio("a-tone.wav");
+var tik = new Audio("tick.mp3");
 tik.volume = 0.5;
 
 var resizeCanvas = function() {
@@ -153,22 +152,6 @@ var p2 = {
   },
 }
 
-var players = prompt("How many players? (enter an integer between 0 and 2)");
-switch(players) {
-  case "0":
-    p1.ai = true;
-    p2.ai = true;
-    break;
-  case "1":
-    p1.ai = false;
-    p2.ai = true;
-    break;
-  default:
-    p1.ai = false;
-    p2.ai = false;
-    break;
-}
-
 var id = 0;
 function Ball() {
   this.id = id++;
@@ -270,7 +253,6 @@ function Ball() {
 }
 
 var ballField = [];
-
 var step = 0;
 var simulate = function() {
   resizeCanvas();
@@ -285,7 +267,7 @@ var simulate = function() {
     ctx.fillText(p2.score, canvas.width / 2 + 10, 20);
     ctx.font = "10px arial";
     ctx.fillStyle = "RGB(200, 200, 200)";
-    ctx.fillText("Music by Goblin Refuge. \"tik\" sound by DeepFrozenApps", 10, canvas.height - 20);
+    ctx.fillText('Music: Autunms Tread by Goblin Refuge. "tik" sound by DeepFrozenApps. "bing" sound by His Self', 10, canvas.height - 10);
   }).call(this);
   if(step % 100 == 0) {
     ballField.push(new Ball());
@@ -306,4 +288,25 @@ var simulate = function() {
   p2.tick();
   step++;
 }
+
+var players = prompt("How many players? (enter an integer between 0 and 2)");
+switch(players) {
+  case "0":
+    p1.ai = true;
+    p2.ai = true;
+    break;
+  case "1":
+    p1.ai = false;
+    p2.ai = true;
+    break;
+  default:
+    p1.ai = false;
+    p2.ai = false;
+    break;
+}
+
 var interval = setInterval(simulate, 50);
+
+$(music).ready(function() {
+  music.play();
+})
