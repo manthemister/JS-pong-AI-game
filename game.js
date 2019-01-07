@@ -8,10 +8,10 @@ var body = document.getElementsByTagName("body")[0];
 body.appendChild(canvas);
 var ctx = canvas.getContext("2d");
 
-var music = new Audio("autumns-tread.wav");
+var music = new Audio("assets/autumns-tread.wav");
 music.loop = true;
-var bing = new Audio("a-tone.wav");
-var tik = new Audio("tick.mp3");
+var bing = new Audio("assets/a-tone.wav");
+var tik = new Audio("assets/tick.mp3");
 tik.volume = 0.5;
 
 var resizeCanvas = function() {
